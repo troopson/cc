@@ -1,0 +1,70 @@
+configurations.all {
+	exclude module:'log4j-over-slf4j'
+	
+}
+
+buildscript {
+    repositories {                
+	    maven { url "http://172.21.9.12:8081/nexus/content/repositories/central" }
+	    maven { url "http://172.21.9.12:8081/nexus/content/repositories/snapshots" }    
+    }
+   
+}
+
+
+
+apply plugin: 'java'
+
+
+jar {
+  // by default fat jar
+  archiveName = 'cc-fat.jar'
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  manifest {
+    attributes 'Main-Class': 'io.vertx.core.Launcher'
+    attributes 'Main-Verticle': 'org.configcenter.MainVertical'
+  }
+}
+
+ext {
+  vertxVersion = "3.3.3"
+}
+
+
+task copyJars(type:Copy) {
+
+  from configurations.runtime
+  into 'build/runtime' // 目标位置
+
+}
+
+task addDependToManifest << {
+    if (!configurations.runtime.isEmpty()) {
+        jar.manifest.attributes('Class-Path': ". " + configurations.runtime.collect { it.name }.join(' '))
+    }
+}
+jar.dependsOn += addDependToManifest 
+
+jar.dependsOn += copyJars
+
+repositories {
+
+	    maven { url "http://172.21.9.12:8081/nexus/content/repositories/central" }
+	    maven { url "http://172.21.9.12:8081/nexus/content/repositories/snapshots" }  
+       // jcenter() 
+
+}
+
+dependencies {
+	 compile "io.vertx:vertx-core:$vertxVersion"
+	 compile "io.vertx:vertx-web:$vertxVersion"
+	 compile "io.vertx:vertx-web-templ-thymeleaf:$vertxVersion"
+	 compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+	 compile group: 'commons-io', name: 'commons-io', version: '2.5'
+	 
+	 
+	 //compile 'io.vertx:vertx-jdbc-client:3.3.3'
+	 //compile 'io.vertx:vertx-sql-common:3.3.3'
+		
+     testCompile 'junit:junit:4.12'
+}

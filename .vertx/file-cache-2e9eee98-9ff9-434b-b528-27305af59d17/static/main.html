@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Config Center</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<link rel="StyleSheet" href="dtree/dtree.css" type="text/css" />
+	<script type="text/javascript" src="dtree/dtree.js"></script>
+	<script type="text/javascript" src="jquery/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+      
+         html,body{
+           width:100%;
+           height:100%;
+         }
+      
+        .treepanel {
+           
+           width: 200px;
+           height:100%;
+           display: inline-block;
+        
+        }
+        
+        .content {
+        	margin-top:100px;
+            width: 800px;
+            height: 100%;
+            display:inline-block;
+        }
+    
+    </style>
+</head>
+
+<body>
+
+<h2>Config Center</h2>
+
+<div class="dtree treepanel">
+
+	<p><a href="javascript: d.openAll();">open all</a> | <a href="javascript: d.closeAll();">close all</a></p>
+
+	<script type="text/javascript">	
+	
+	
+		d = new dTree('d');
+		d.add("0",-1,'config files');		
+		document.write(d);
+		
+		$.get("/storeList", function(data){
+			for(var i=0;i<data.length;i++){
+				var row = data[i];
+				d.add(row.id,row.pid,row.name);
+			}	          
+			$(".dtree").html(d.toString());
+	    });
+
+	
+	</script>
+
+</div>
+<div class="content"><textarea style="width:100%;height:100%"></textarea></div>
+</body>
+
+</html>

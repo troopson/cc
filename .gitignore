@@ -1,0 +1,9 @@
+build
+bin
+.classpath
+.gradle
+/.settings
+/.project
+/localcode
+bak
+*.bak
