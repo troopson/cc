@@ -1,0 +1,2 @@
+# cc
+config center server
