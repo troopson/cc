@@ -66,7 +66,12 @@ public class RouterPath {
 	private static ConfigedAuthProvider routeLogin(Vertx vertx, Router router) {
 		ConfigedAuthProvider ca = new ConfigedAuthProvider(vertx);
 		router.route().handler(CookieHandler.create());
-		router.route().handler(SessionHandler.create(LocalSessionStore.create(vertx)));
+		
+		SessionHandler sessionHandler = SessionHandler.create(LocalSessionStore.create(vertx));
+		sessionHandler.setSessionTimeout(30*60*1000);
+		sessionHandler.setNagHttps(false);//http请求不会报出不安全的提示信息
+		router.route().handler(sessionHandler);
+		
 		router.route().handler(UserSessionHandler.create(ca));
 
 		FormLoginHandler flogin = FormLoginHandler.create(ca);
