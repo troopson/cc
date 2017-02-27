@@ -10,7 +10,6 @@ import org.wertx.util.StringUtil;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.Vertx;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpClientResponse;
@@ -32,27 +31,20 @@ public class MainVertical extends AbstractVerticle {
 	
 	public void start() throws Exception {
 				
-		/*
-		 * 	private String host = "0.0.0.0";
-	private int port = 7777;
-	private String dataDir = ".";
-	"ccserver.host":"172.21.9.20",
-	"ccserver.port":7777,
-	"ccserver.file": "test/dev/conf.json"
-		 */
+
 		Future<Void> fu = Future.future();
 		
-		loadConfig(vertx,fu);
+		this.loadConfig(fu);
 		
 		fu.setHandler(ar->{
-			startServer(vertx);
+			startServer();
 		});
 		
 	
 		
 	}
 	
-	private static void startServer(Vertx vertx){
+	private void startServer(){
 		JsonObject conf = vertx.getOrCreateContext().config();
 		String host = conf.getString("host");
 		int port = conf.getInteger("port", 7777);
@@ -66,7 +58,7 @@ public class MainVertical extends AbstractVerticle {
 
 		server.requestHandler(router::accept);
 		
-		startFileSystemMonitor(vertx,conf);
+		startFileSystemMonitor(conf);
 		
 		
 		EventBus bus = vertx.eventBus();		
@@ -78,7 +70,7 @@ public class MainVertical extends AbstractVerticle {
 	
 	
 	
-	private static void listen(HttpServer server,String host,int port){	
+	private void listen(HttpServer server,String host,int port){	
 		
 		server.listen(port,host==null?"127.0.0.1":host,ar->{
 			
@@ -101,7 +93,7 @@ public class MainVertical extends AbstractVerticle {
 	}
 	
 	
-	private static void loadConfig(Vertx vertx, Future<Void> fu){
+	private void loadConfig(Future<Void> fu){
 		JsonObject conf= vertx.getOrCreateContext().config();
 		String cchost = conf.getString("ccserver.host");
 		int ccport = conf.getInteger("ccserver.port",7777);
@@ -141,7 +133,7 @@ public class MainVertical extends AbstractVerticle {
 	}
 
 	
-	public static void startFileSystemMonitor(Vertx vertx,JsonObject config){
+	public void startFileSystemMonitor(JsonObject config){
 		WorkerExecutor executor = vertx.createSharedWorkerExecutor("backend-jobs");
 		
 		EventBus bus = vertx.eventBus();

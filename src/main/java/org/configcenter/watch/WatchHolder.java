@@ -10,8 +10,6 @@ import java.util.Set;
 
 import org.wertx.util.StringUtil;
 
-import io.vertx.core.Vertx;
-
 /**
  * @author 瞿建军       Email: jianjun.qu@istuary.com
  * 2017年2月14日
@@ -56,9 +54,7 @@ public class WatchHolder {
 		Set<String> urls = watchList.get(file);
 		if(urls==null || urls.isEmpty())
 			return;
-		
-		Vertx vertx = Vertx.vertx();
-		
+				
 		for(String url : urls){
 			
 			//TODO
