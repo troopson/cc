@@ -89,3 +89,6 @@ public class CCServerListener implements ApplicationListener<ApplicationEvent> {
 }
 
 ```
+## 说明
+
+这个项目是在学习vertx过程中做的，一来学习一下vertx技术，二来做一个看起来有用的东西。
